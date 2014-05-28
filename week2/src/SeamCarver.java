@@ -153,8 +153,28 @@ public class SeamCarver {
 
     private void removeSeam(int[] a) {
 
+        if (colors.height() <= 1 || colors.width() <= 1) {
+            throw new IllegalArgumentException();
+        }
+
         if (a.length != colors.height()) {
             throw new IllegalArgumentException();
+        }
+
+        if (a[0] < 0 || a[0] >= colors.width()) {
+            throw new IllegalArgumentException();
+        }
+
+        for (int y = 0; y < a.length - 1; y++) {
+            int x1 = a[y];
+            int x2 = a[y + 1];
+            if (x2 < 0 || x2 >= colors.width()) {
+                throw new IllegalArgumentException();
+            }
+
+            if (Math.abs(x2 - x1) > 1) {
+                throw new IllegalArgumentException();
+            }
         }
 
         Colors newColors = new Colors(colors.width() - 1, colors.height(), colors.getTranspose());
