@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class Colors {
 
-    private final int[][] c;
+    private final int[] c;
     private int width;
     private int height;
     private boolean trans;
@@ -11,7 +11,7 @@ public class Colors {
         this.width = trans == false ? width : height;
         this.height = trans == false ? height : width;
         this.trans = trans;
-        c = new int[this.width][this.height];
+        c = new int[this.width * this.height];
     }
 
     public Colors(Picture picture) {
@@ -33,16 +33,8 @@ public class Colors {
         return trans == false ? height : width;
     }
 
-    public void decreaseWidth() {
-        if (trans) {
-            height--;
-        } else {
-            width--;
-        }
-    }
-
     public void set(int x, int y, int color) {
-        c[getX(x, y)][getY(x, y)] = color;
+        c[getIndex(x, y)] = color;
     }
 
     public void set(int x, int y, Color color) {
@@ -50,12 +42,28 @@ public class Colors {
     }
 
     public int get(int x, int y) {
-        return c[getX(x, y)][getY(x, y)];
+        return c[getIndex(x, y)];
     }
 
     public Color getColor(int x, int y) {
         int value = get(x, y);
         return new Color(value);
+    }
+
+    private int getIndex(int x, int y) {
+        int realX = getX(x, y);
+        int realY = getY(x, y);
+
+        if (realX < 0 || realX >= width) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (realY < 0 || realY >= height) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        int index = height * realX + realY;
+        return index;
     }
 
     private int getX(int x, int y) {

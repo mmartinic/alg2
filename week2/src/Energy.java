@@ -1,6 +1,6 @@
 public class Energy {
 
-    private final double[][] e;
+    private final double[] e;
     private int width;
     private int height;
     private boolean trans;
@@ -10,10 +10,10 @@ public class Energy {
     }
 
     public Energy(int width, int height, boolean trans) {
-        setWidth(width);
-        setHeight(height);
+        this.width = trans == false ? width : height;
+        this.height = trans == false ? height : width;
         this.trans = trans;
-        e = new double[this.width][this.height];
+        e = new double[this.width * this.height];
     }
 
     public int width() {
@@ -24,20 +24,28 @@ public class Energy {
         return trans == false ? height : width;
     }
 
-    public void setWidth(int width) {
-        this.width = trans == false ? width : height;
-    }
-
-    public void setHeight(int height) {
-        this.height = trans == false ? height : width;
-    }
-
     public void set(int x, int y, double value) {
-        e[getX(x, y)][getY(x, y)] = value;
+        e[getIndex(x, y)] = value;
     }
 
     public double get(int x, int y) {
-        return e[getX(x, y)][getY(x, y)];
+        return e[getIndex(x, y)];
+    }
+
+    private int getIndex(int x, int y) {
+        int realX = getX(x, y);
+        int realY = getY(x, y);
+
+        if (realX < 0 || realX >= width) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (realY < 0 || realY >= height) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        int index = height * realX + realY;
+        return index;
     }
 
     private int getX(int x, int y) {

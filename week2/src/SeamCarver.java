@@ -1,4 +1,4 @@
-import java.awt.*;
+import java.awt.Color;
 
 public class SeamCarver {
 
@@ -144,16 +144,18 @@ public class SeamCarver {
         setTranspose(true);
         removeSeam(a);
         setTranspose(false);
-        initEnergy();
     }
 
     // remove vertical seam from current picture
     public void removeVerticalSeam(int[] a) {
         removeSeam(a);
-        initEnergy();
     }
 
     private void removeSeam(int[] a) {
+
+        if (a.length != colors.height()) {
+            throw new IllegalArgumentException();
+        }
 
         Colors newColors = new Colors(colors.width() - 1, colors.height(), colors.getTranspose());
         for (int y = 0; y < colors.height(); y++) {
@@ -165,15 +167,32 @@ public class SeamCarver {
             }
         }
         colors = newColors;
-    }
 
-    public static void main(String[] args) {
-        Picture org = new Picture("D:\\myProjects\\coursera\\alg2\\week2\\seamCarving\\HJocean.png");
-        org.show();
+        Energy newEnergy = new Energy(energy.width() - 1, energy.height(), colors.getTranspose());
+        for (int y = 0; y < energy.height(); y++) {
+            int newX = 0;
+            for (int x = 0; x < energy.width(); x++) {
+                if (a[y] != x) {
+                    newEnergy.set(newX++, y, energy.get(x, y));
+                }
+            }
+        }
+        energy = newEnergy;
 
-        SeamCarver sc = new SeamCarver(org);
-        Picture picture = sc.picture();
-        picture.show();
+        for (int y = 0; y < energy.height(); y++) {
+            int seamX = a[y];
+            double gradient = getGradient(seamX, y);
+            energy.set(seamX, y, gradient);
 
+            if (seamX > 0) {
+                gradient = getGradient(seamX - 1, y);
+                energy.set(seamX - 1, y, gradient);
+            }
+
+            if (seamX < energy.width() - 1) {
+                gradient = getGradient(seamX + 1, y);
+                energy.set(seamX + 1, y, gradient);
+            }
+        }
     }
 }
