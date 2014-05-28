@@ -201,17 +201,18 @@ public class SeamCarver {
 
         for (int y = 0; y < energy.height(); y++) {
             int seamX = a[y];
-            double gradient = getGradient(seamX, y);
-            energy.set(seamX, y, gradient);
 
-            if (seamX > 0) {
-                gradient = getGradient(seamX - 1, y);
+            if (seamX == colors.width()) {
+                double gradient = getGradient(seamX - 1, y);
                 energy.set(seamX - 1, y, gradient);
-            }
+            } else {
+                double gradient = getGradient(seamX, y);
+                energy.set(seamX, y, gradient);
 
-            if (seamX < energy.width() - 1) {
-                gradient = getGradient(seamX + 1, y);
-                energy.set(seamX + 1, y, gradient);
+                if (seamX > 0) {
+                    gradient = getGradient(seamX - 1, y);
+                    energy.set(seamX - 1, y, gradient);
+                }
             }
         }
     }
