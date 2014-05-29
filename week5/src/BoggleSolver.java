@@ -15,7 +15,6 @@ public class BoggleSolver {
             String s = dictionary[i];
             trie.add(s);
         }
-
     }
 
     // Returns the set of all valid words in the given Boggle board, as an Iterable.
@@ -26,17 +25,17 @@ public class BoggleSolver {
 
         for (int i = 0; i < board.rows(); i++) {
             for (int j = 0; j < board.cols(); j++) {
-                dfs(board, "", validWords, marked, i, j);
+                dfs(board, "", trie.root, validWords, marked, i, j);
             }
         }
         return validWords;
     }
 
-    private void dfs(final BoggleBoard board, final String prefix, final Set<String> validWords, final boolean[][] marked, final int i, final int j) {
+    private void dfs(final BoggleBoard board, final String prefix, final Node parentNode, final Set<String> validWords, final boolean[][] marked, final int i, final int j) {
 
         char letter = board.getLetter(i, j);
         String word = prefix + letter;
-        Node node = trie.get(word);
+        Node node = trie.get(parentNode, word, prefix.length());
         if (node == null) {
             return;
         }
@@ -63,7 +62,7 @@ public class BoggleSolver {
                 }
 
                 if (!marked[k][l]) {
-                    dfs(board, word, validWords, marked, k, l);
+                    dfs(board, word, node, validWords, marked, k, l);
                 }
             }
         }
