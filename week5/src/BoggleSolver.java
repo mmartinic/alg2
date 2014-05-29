@@ -31,10 +31,15 @@ public class BoggleSolver {
         return validWords;
     }
 
-    private void dfs(final BoggleBoard board, final String prefix, final Node parentNode, final Set<String> validWords, final boolean[][] marked, final int i, final int j) {
-
+    private void dfs(final BoggleBoard board, final String prefix, final Node parentNode, final Set<String> validWords,
+                     final boolean[][] marked, final int i, final int j) {
         char letter = board.getLetter(i, j);
         String word = prefix + letter;
+
+        if (letter == 'Q') {
+            word = word + 'U';
+        }
+
         Node node = trie.get(parentNode, word, prefix.length());
         if (node == null) {
             return;
@@ -42,7 +47,7 @@ public class BoggleSolver {
 
         marked[i][j] = true;
 
-        if (node.isWord) {
+        if (node.isWord && word.length() > 2) {
             validWords.add(word);
         }
 
@@ -152,9 +157,7 @@ public class BoggleSolver {
         String[] dictionary = in.readAllStrings();
         BoggleSolver solver = new BoggleSolver(dictionary);
 
-        System.out.println(solver.trie.contains("UT"));
-
-        BoggleBoard board = new BoggleBoard("D:\\myProjects\\coursera\\alg2\\week5\\boggle\\board-pneumonoultramicroscopicsilicovolcanoconiosis.txt");
+        BoggleBoard board = new BoggleBoard("D:\\myProjects\\coursera\\alg2\\week5\\boggle\\board-aqua.txt");
         int score = 0;
         for (String word : solver.getAllValidWords(board)) {
             StdOut.println(word);
