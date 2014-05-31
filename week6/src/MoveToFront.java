@@ -2,6 +2,8 @@ import java.util.ArrayList;
 
 public class MoveToFront {
 
+    private static final int R = 256;
+
     // apply move-to-front encoding, reading from standard input and writing to standard output
     public static void encode() {
         ArrayList<Character> chars = initChars();
@@ -35,8 +37,8 @@ public class MoveToFront {
     }
 
     private static ArrayList<Character> initChars() {
-        ArrayList<Character> chars = new ArrayList<>(256);
-        for (int i = 0; i < 256; i++) {
+        ArrayList<Character> chars = new ArrayList<>(R);
+        for (int i = 0; i < R; i++) {
             chars.add((char) i);
         }
         return chars;
