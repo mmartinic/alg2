@@ -17,34 +17,43 @@ public class CircularSuffixArray {
         sort();
     }
 
-    // lsd
+    // msd
     private void sort() {
         final int W = s.length();
         final int N = offsets.length;
-
         int[] aux = new int[N];
+        sort(0, N, 0, aux, W);
+    }
 
-        for (int d = W - 1; d >= 0; d--) {
+    private void sort(int start, int end, int d, int[] aux, int W) {
 
-            int[] count = new int[R + 1];
-            for (int i = 0; i < N; i++) {
-                char c = chatAt(offsets[i], d);
-                count[c + 1]++;
-            }
-
-            for (int i = 0; i < count.length - 1; i++) {
-                count[i + 1] = count[i] + count[i + 1];
-            }
-
-            for (int i = 0; i < N; i++) {
-                char c = chatAt(offsets[i], d);
-                aux[count[c]++] = offsets[i];
-            }
-
-            for (int i = 0; i < N; i++) {
-                offsets[i] = aux[i];
-            }
+        if (d == W - 1 || start >= end - 1) {
+            return;
         }
+
+        int[] count = new int[R + 1];
+        for (int i = start; i < end; i++) {
+            char c = chatAt(offsets[i], d);
+            count[c + 1]++;
+        }
+
+        for (int i = 0; i < count.length - 1; i++) {
+            count[i + 1] = count[i] + count[i + 1];
+        }
+
+        for (int i = start; i < end; i++) {
+            char c = chatAt(offsets[i], d);
+            aux[count[c]++] = offsets[i];
+        }
+
+        for (int i = start; i < end; i++) {
+            offsets[i] = aux[i - start];
+        }
+
+        for (int i = 0; i < R; i++) {
+            sort(start + count[i], start + count[i + 1], d + 1, aux, W);
+        }
+
     }
 
     private char chatAt(int offset, int d) {
@@ -65,16 +74,13 @@ public class CircularSuffixArray {
         String s = "ABRACADABRA!";
 
         In in = new In("D:\\myProjects\\coursera\\alg2\\week6\\burrows\\amendments.txt");
-        In in2 = new In("D:\\myProjects\\coursera\\alg2\\week6\\burrows\\cadabra.txt");
 
+        Stopwatch stopwatch = new Stopwatch();
         CircularSuffixArray circularSuffixArray = new CircularSuffixArray(in.readAll());
-        CircularSuffixArray circularSuffixArray2 = new CircularSuffixArray(in2.readAll());
+        System.out.println(stopwatch.elapsedTime());
 
-        for (int i = 0; i < circularSuffixArray.length(); i++) {
-            System.out.println(circularSuffixArray.index(i));
-        }
-        for (int i = 0; i < circularSuffixArray2.length(); i++) {
-            System.out.println(circularSuffixArray2.index(i));
-        }
+//        for (int i = 0; i < circularSuffixArray.length(); i++) {
+//            System.out.println(circularSuffixArray.index(i));
+//        }
     }
 }
