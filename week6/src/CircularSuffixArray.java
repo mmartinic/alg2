@@ -15,17 +15,23 @@ public class CircularSuffixArray {
             offsets[i] = i;
         }
 
-        sort();
+        q3sort();
     }
 
     // msd
-    private void sort() {
+    private void msdSort() {
         final int N = offsets.length;
         int[] aux = new int[N];
-        sort(0, N, 0, aux);
+        msdSort(0, N, 0, aux);
     }
 
-    private void sort(int start, int end, int d, int[] aux) {
+    // q3string
+    private void q3sort() {
+        final int N = offsets.length;
+        q3sort(0, N, 0);
+    }
+
+    private void msdSort(int start, int end, int d, int[] aux) {
 
         if (end - start < CUTOFF) {
             insertion(start, end, d);
@@ -52,7 +58,7 @@ public class CircularSuffixArray {
         }
 
         for (int i = 0; i < R; i++) {
-            sort(start + count[i], start + count[i + 1], d + 1, aux);
+            msdSort(start + count[i], start + count[i + 1], d + 1, aux);
         }
     }
 
@@ -70,8 +76,7 @@ public class CircularSuffixArray {
             char c2 = chatAt(offsets[x2], i);
             if (c1 < c2) {
                 return true;
-            }
-            else if (c1 > c2) {
+            } else if (c1 > c2) {
                 return false;
             }
         }
@@ -82,6 +87,38 @@ public class CircularSuffixArray {
         int temp = offsets[x1];
         offsets[x1] = offsets[x2];
         offsets[x2] = temp;
+    }
+
+    private void q3sort(int start, int end, int d) {
+        if (end - start < CUTOFF) {
+            insertion(start, end, d);
+            return;
+        }
+
+//        if (start >= end - 1) {
+//            return;
+//        }
+
+        int lt = start;
+        int gt = end - 1;
+        int i = start + 1;
+        int v = chatAt(offsets[start], d);
+
+        while (i <= gt) {
+            char c = chatAt(offsets[i], d);
+
+            if (c < v) {
+                exch(i++, lt++);
+            } else if (c > v) {
+                exch(i, gt--);
+            } else {
+                i++;
+            }
+        }
+
+        q3sort(start, lt, d);
+        q3sort(lt, gt + 1, d + 1);
+        q3sort(gt + 1, end, d);
     }
 
     private char chatAt(int offset, int d) {
