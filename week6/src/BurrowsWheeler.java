@@ -1,6 +1,6 @@
-import java.util.*;
-
 public class BurrowsWheeler {
+
+    private static final int R = 256;
 
     // apply Burrows-Wheeler encoding, reading from standard input and writing to standard output
     public static void encode() {
@@ -39,30 +39,25 @@ public class BurrowsWheeler {
     }
 
     private static void decode(int first, char[] lastColumn) {
-        char[] firstColumn = Arrays.copyOf(lastColumn, lastColumn.length);
-        Arrays.sort(firstColumn);
-
+        char[] firstColumn = new char[lastColumn.length];
         int[] next = new int[lastColumn.length];
 
-        Map<Character, List<Integer>> lastRowChars = new HashMap<>();
+        //key-indexed counting
+        int[] count = new int[R + 1];
         for (int i = 0; i < lastColumn.length; i++) {
             char c = lastColumn[i];
-
-            List<Integer> lastRowCharIndices = lastRowChars.get(c);
-            if (lastRowCharIndices == null) {
-                lastRowCharIndices = new ArrayList<>();
-                lastRowChars.put(c, lastRowCharIndices);
-            }
-            lastRowCharIndices.add(i);
+            count[c + 1]++;
         }
 
-        for (int i = 0; i < firstColumn.length; ) {
-            char c = firstColumn[i];
-            List<Integer> lastRowCharIndices = lastRowChars.get(c);
+        for (int i = 0; i < count.length - 1; i++) {
+            count[i + 1] = count[i] + count[i + 1];
+        }
 
-            for (int j = 0; j < lastRowCharIndices.size(); j++) {
-                next[i++] = lastRowCharIndices.get(j);
-            }
+        for (int i = 0; i < lastColumn.length; i++) {
+            char c = lastColumn[i];
+            firstColumn[count[c]] = c;
+            next[count[c]] = i;
+            count[c]++;
         }
 
         for (int x = first, i = 0; i < lastColumn.length; x = next[x], i++) {
