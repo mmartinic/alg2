@@ -38,10 +38,10 @@ public class CircularSuffixArray {
             return;
         }
 
-        int[] count = new int[R + 1];
+        int[] count = new int[R + 2];
         for (int i = start; i < end; i++) {
             char c = chatAt(offsets[i], d);
-            count[c + 1]++;
+            count[c + 2]++;
         }
 
         for (int i = 0; i < count.length - 1; i++) {
@@ -50,7 +50,7 @@ public class CircularSuffixArray {
 
         for (int i = start; i < end; i++) {
             char c = chatAt(offsets[i], d);
-            aux[count[c]++] = offsets[i];
+            aux[count[c + 1]++] = offsets[i];
         }
 
         for (int i = start; i < end; i++) {
@@ -136,12 +136,14 @@ public class CircularSuffixArray {
     }
 
     public static void main(String[] args) {
-        String s = "ABRACADABRA!";
+//        String s = "ABRACADABRA!";
 
-        In in = new In("D:\\myProjects\\coursera\\alg2\\week6\\burrows\\aesop.txt");
+//        In in = new In("D:\\myProjects\\coursera\\alg2\\week6\\burrows\\CS_bricks.jpg");
+        BinaryIn binaryIn = new BinaryIn("D:\\myProjects\\coursera\\alg2\\week6\\burrows\\CS_bricks.jpg");
 
         Stopwatch stopwatch = new Stopwatch();
-        CircularSuffixArray circularSuffixArray = new CircularSuffixArray(in.readAll());
+        String s = binaryIn.readString();
+        CircularSuffixArray circularSuffixArray = new CircularSuffixArray(s);
         System.out.println(stopwatch.elapsedTime());
 
 //        for (int i = 0; i < circularSuffixArray.length(); i++) {
